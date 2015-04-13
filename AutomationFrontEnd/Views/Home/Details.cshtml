@@ -1,0 +1,116 @@
+﻿@model AutomationSuiteFrontEnd.Models.ExecutionJobDetailsAndFrequencyViewModel
+
+@{
+    ViewBag.Title = "ExecutionJob: Details";
+    Layout = "~/Views/Shared/_LayoutExecutionJob.cshtml";
+}
+
+<!-- Header -->
+<h1 class="page-header">Job Details</h1>
+
+<div class="container-fluid">
+    <form class="form-horizontal">
+
+        <!-- OWNER -->
+        <div class="form-group">
+            <label for="InputOwner" class="col-sm-2 control-label">Owner</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="InputOwner" placeholder="CP535894" value="@Html.DisplayFor(model => model.Details.Name)">
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <!-- Name -->
+        <div class="form-group">
+            <label for="InputName" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="InputName" placeholder="Job XXXX" value="@Html.DisplayFor(model => model.Details.Name)">
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label for="InputDescription" class="col-sm-2 control-label">Description</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="InputDescription" placeholder="This Job Does X" value="@Html.DisplayFor(model => model.Details.Description)">
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <!-- Start Date -->
+        <div class="form-group">
+            <label for="InputStartDate" class="col-sm-2 control-label">Start Date</label>
+            <div class="col-sm-5">
+                <input type="datetime" class="form-control" id="InputStartDate" value="@Html.DisplayFor(model => model.Frequency.FirstScheduledAsString)">
+            </div>
+            <div class="col-sm-2">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="CheckBoxImmediateStart" aria-label="Immediate Execution" />
+                        Start Immediately
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <!-- Frequency Type -->
+        <div class="form-group">
+            <label for="FilterInputFrequency" class="col-sm-2 control-label">Frequency Type</label>
+            <div class="col-sm-4">
+                <select id="FilterInputFrequency" class="form-control">
+                    <option>Adhoc</option>
+                    <option>1 Minute</option>
+                    <option>5 Minutes</option>
+                    <option>Hourly</option>
+                    <option>Daily</option>
+                </select>
+            </div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <!-- Ending Criteria -->
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="radio">
+                        <label class="pull-right">
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                            Count
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <input type="number" class="form-control pull-left" id="InputEndDate">
+                </div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="radio">
+                        <label class="pull-right">
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                            End Date
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <input type="datetime" class="form-control pull-left" id="InputMaxCount">
+                </div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<nav>
+    <ul class="pager">
+        <li><a href="#">Previous</a></li>
+        <li><a href="#">Next</a></li>
+    </ul>
+</nav>

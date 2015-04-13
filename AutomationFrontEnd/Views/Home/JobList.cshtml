@@ -1,0 +1,220 @@
+﻿@{
+    ViewBag.Title = "JobList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section CustomPreBodyJS{
+    <!-- Drag and Drop Specific Logic -->
+    <script type="text/javascript">
+        var oDraggedRow;
+        var bDraggedFromAdditionTable = false;
+
+        //
+        function dragStarted(evt) {
+            // If its a table, get the row above it (Table -> TD -> TR)
+            oDraggedRow = $(evt.target).closest(".TableRow");
+
+            // Set a boolean saying whether this dragged item is from the
+            // toolbox or not
+            bDraggedFromAdditionTable = $(evt.target).closest("table").attr("id") == "toolboxContainer";
+
+            //specify allowed transfer
+            evt.dataTransfer.effectAllowed = "move";
+        }
+
+        function draggingOver(evt) {
+            //drag over
+            evt.preventDefault();
+            //specify operation
+            evt.dataTransfer.dropEffect = "move";
+        }
+
+        function dropped(evt) {
+            //drop (Ignore what the browser wants to do)
+            evt.preventDefault();
+            evt.stopPropagation();
+
+            // Default
+            var oLandingElement = $(event.target);
+
+            // Landing on the core container
+            var bHasCoreContainerAsParent = !!$(oLandingElement).closest("#coreContainer").length;
+
+            // If we are landing on the core container (from TB)
+            if (bDraggedFromAdditionTable &&
+                bHasCoreContainerAsParent) {
+                // Append a clone
+                $(oLandingElement).closest(".TableRow").after($(oDraggedRow).clone());
+            }
+            else // Move & replace
+            {
+                // If we landed on a row we like
+                if ($(oLandingElement).prop("tagName") == "TR" &&
+                    $(oLandingElement).class == "TableRow") {
+                    // DO nothing
+                }
+                else {
+                    // Get the closest row
+                    oLandingElement = $(oLandingElement).closest(".TableRow");
+                }
+                // Intermediate var for text
+                var sText = $(oLandingElement).html();
+                // Swap the objects
+                $(oLandingElement).html($(oDraggedRow).html());
+                $(oDraggedRow).html(sText);
+            }
+        }
+    </script>
+
+    <!-- Responsible for toggle/expansion of rows -->
+    <script>
+
+        function removeRow(object) {
+            //alert(object);
+            var $this = $(object);
+            //alert($(object).closest('.table.table-hover').find(".expandable").html());
+            $(object).closest(".TableRow").remove();
+        };
+    </script>
+
+}
+
+<!-- Header -->
+<h1 class="page-header">Your Jobs</h1>
+
+<div class="row">
+    <!-- Filtering and Selection -->
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Filter By:</h3>
+            </div>
+            <!-- List group -->
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="form-group">
+                        <label for="FilterInputOwner">Owner</label>
+                        <input type="text" class="form-control" id="FilterInputOwner" placeholder="CP535894">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-group">
+                        <label for="FilterInputName">Name</label>
+                        <input type="text" class="form-control" id="FilterInputName" placeholder="Job XXXX">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-group">
+                        <label for="FilterInputDescription">Description</label>
+                        <input type="text" class="form-control" id="FilterInputDescription" placeholder="This Job Does X">
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-group">
+                        <label for="FilterInputStatus">Status</label>
+                        <div class="btn-group">
+                            <button type="button" id="FilterInputStatus" class="btn btn-default dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="false">
+                                Action <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Active</a></li>
+                                <li><a href="#">Inactive</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-group">
+                        <label for="FilterInputFrequency">Frequency Type</label>
+                        <div class="btn-group">
+                            <button type="button" id="FilterInputFrequency" class="btn btn-default dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="false">
+                                Action <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Adhoc</a></li>
+                                <li><a href="#">1 Minute</a></li>
+                                <li><a href="#">5 Minute</a></li>
+                                <li><a href="#">Hourly</a></li>
+                                <li><a href="#">Daily</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- List of Actions -->
+    <div class="col-md-8">
+        <!-- This table has receiving events because we need to be able to drop things on it -->
+        <table id="coreContainer" class="table table-hover" draggable="false" ondragover="draggingOver(event)" ondrop="dropped(event)">
+            <tbody>
+                <!-- Generate available Toolbox Items -->
+                @for (int iIndex = 0; iIndex < ViewBag.ExecutionJobs.Count; iIndex++)
+                {
+                    // Retrieve the objects here and store in temporary variables
+                    AutomationSuiteFrontEnd.AutomationService.ExecutionJob oTemp = (AutomationSuiteFrontEnd.AutomationService.ExecutionJob)ViewBag.ExecutionJobs[iIndex];
+                    AutomationSuiteFrontEnd.AutomationService.JobFrequencyCount oFreq = (AutomationSuiteFrontEnd.AutomationService.JobFrequencyCount)oTemp.FreqType;
+
+                    <tr class="TableRow" draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)">
+                        <td draggable="true">
+                            <!-- Job Details -->
+                            <div class="panel panel-default">
+                                <!-- Row Heading -->
+                                <div class="panel-heading" role="tab" id="@("Heading" + iIndex)">
+                                    <!-- Controls the collapsable section -->
+                                    <a href="@("#collapse" + iIndex)" data-toggle="collapse" 
+                                       aria-expanded="true" aria-controls="@("#collapse" + iIndex)">@oTemp.Details.Name</a>
+                                    
+                                    <!-- Expand And Remove Buttons -->
+                                    <button type="button" class="btn btn-danger btn-xs pull-right" onclick="removeRow(this)" style="width:80px">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-xs pull-right" onclick="@("location.href='"
+                                        + Url.Action("Details", "Home", new { id = oTemp.Details.Name })
+                                        + "'")" style="width:80px">
+                                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Details
+                                    </button>
+                                </div>
+                                <!-- Row Body -->
+                                <div id="@("collapse" + iIndex)" class="panel-collapse collapse in" role="tabpanel" 
+                                     aria-labelledby="@("#Heading" + iIndex)">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-md-6">Description</div>
+                                                <div class="col-md-6" style="text-align:right">@oTemp.Details.Description</div>
+                                            </div>      
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-md-6">Parameters</div>
+                                                <div class="col-md-6" style="text-align:right">@oTemp.Details.Description</div>
+                                            </div>                              
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-md-6">Frequency Type</div>
+                                                <div class="col-md-6" style="text-align:right">@oFreq.FrequencyType</div>
+                                            </div>      
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-md-6">Maximum Run Count</div>
+                                                <div class="col-md-6" style="text-align:right">@oFreq.MaximumRunCount</div>
+                                            </div>  
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+

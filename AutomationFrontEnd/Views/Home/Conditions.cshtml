@@ -1,0 +1,250 @@
+﻿@model IEnumerable<AutomationSuiteFrontEnd.Models.ExecutionJobTriggerList>
+
+@{
+    Layout = "~/Views/Shared/_LayoutExecutionJob.cshtml";
+    ViewBag.Title = "ExecutionJob: Conditions";
+}
+
+@section CustomPreBodyJS{
+    <!-- Drag and Drop Specific Logic -->
+    <script type="text/javascript">
+        var oDraggedRow;
+        var bDraggedFromAdditionTable = false;
+
+        //
+        function dragStarted(evt) {
+            // If its a table, get the row above it (Table -> TD -> TR)
+            oDraggedRow = $(evt.target).closest(".TableRow");
+
+            // Set a boolean saying whether this dragged item is from the
+            // toolbox or not
+            bDraggedFromAdditionTable = $(evt.target).closest("table").attr("id") == "toolboxContainer";
+
+            //specify allowed transfer
+            evt.dataTransfer.effectAllowed = "move";
+        }
+
+        function draggingOver(evt) {
+            //drag over
+            evt.preventDefault();
+            //specify operation
+            evt.dataTransfer.dropEffect = "move";
+        }
+
+        function dropped(evt) {
+            //drop (Ignore what the browser wants to do)
+            evt.preventDefault();
+            evt.stopPropagation();
+
+            // Default
+            var oLandingElement = $(event.target);
+
+            // Landing on the core container
+            var bHasCoreContainerAsParent = !!$(oLandingElement).closest("#coreContainer").length;
+
+            // If we are landing on the core container (from TB)
+            if (bDraggedFromAdditionTable &&
+                bHasCoreContainerAsParent) {
+                // Append a clone
+                $(oLandingElement).closest(".TableRow").after($(oDraggedRow).clone());
+            }
+            else // Move & replace
+            {
+                // If we landed on a row we like
+                if ($(oLandingElement).prop("tagName") == "TR" &&
+                    $(oLandingElement).class == "TableRow") {
+                    // DO nothing
+                }
+                else {
+                    // Get the closest row
+                    oLandingElement = $(oLandingElement).closest(".TableRow");
+                }
+                // Intermediate var for text
+                var sText = $(oLandingElement).html();
+                // Swap the objects
+                $(oLandingElement).html($(oDraggedRow).html());
+                $(oDraggedRow).html(sText);
+            }
+        }
+    </script>
+
+    <!-- Responsible for toggle/expansion of rows -->
+    <script>
+
+        function removeRow(object) {
+            //alert(object);
+            var $this = $(object);
+            //alert($(object).closest('.table.table-hover').find(".expandable").html());
+            $(object).closest(".TableRow").remove();
+        };
+
+        function expandRow(object) {
+            //alert(object);
+            var $this = $(object);
+            //alert($(object).closest('.table.table-hover').find(".expandable").html());
+            $(object).closest(".panel.panel-default").find('.table.table-hover').find(".expandable").slideToggle(100).promise().done(
+                function () {
+                    var oIcon = $($this).closest("TR").find("span");
+                    //alert($(oIcon).html());
+
+                    if ($($this).text().indexOf("Expand") > -1) {
+                        $($this).html("<span class='glyphicon glyphicon-minus' aria-hidden='true'></span> Minimise");
+                    }
+                    else {
+                        $($this).html("<span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Expand");
+                    }
+                });
+        };
+    </script>
+
+}
+
+
+@helper GenerateInputControl(AutomationSuiteFrontEnd.Utilities.Data.ExpandableRow xoRow)
+{
+    if (xoRow.InputType == typeof(DateTime))
+    {
+        <input type="datetime" class="form-control" value="@xoRow.Value">
+    }
+    else if (xoRow.InputType == typeof(int))
+    {
+        <input type="number" class="form-control" value="@xoRow.Value">
+    }
+    else if (xoRow.InputType == typeof(Boolean))
+    {
+        <input type="radio" class="form-control" value="@xoRow.Value">
+    }
+    else if (xoRow.InputType == typeof(AutomationSuiteFrontEnd.AutomationService.FileActionType))
+    {
+        <select class="form-control">
+            <option class="@(xoRow.Value.Equals("fsRead")) ? selected :  )">fsRead</option>
+            <option class="@(xoRow.Value.Equals("fsWrite")) ? selected :  )">fsWrite</option>
+            <option class="@(xoRow.Value.Equals("fsCreate")) ? selected :  )">fsCreate</option>
+            <option class="@(xoRow.Value.Equals("fsDelete")) ? selected :  )">fsDelete</option>
+        </select>    
+    }
+    else
+    {
+        <input type="text" class="form-control" value="@xoRow.Value">
+    }
+}
+
+<!-- Header -->
+<h1 class="page-header">Triggers or Conditions</h1>
+
+<!-- Table Row drag and drop -->
+<div class="row">
+    <!-- Core List -->
+    <div class="col-md-8">
+        <div class="row">
+            <!-- Execution Action List -->
+            <div class="col-md-12">
+                <!-- This table has receiving events because we need to be able to drop things on it -->
+                <table id="coreContainer" class="table table-hover" draggable="false" ondragover="draggingOver(event)" ondrop="dropped(event)">
+                    <tbody>
+                        <tr class="TableRow"><th><center>Actions (Drag Items Here)</center></th></tr>
+                        <!-- Insert existing actions if there are any -->
+                        @if (Model != null)
+                        {
+                            foreach (AutomationSuiteFrontEnd.Models.ExecutionJobTriggerList oTemp in Model)
+                            {
+                                for (int iIndex = 0; iIndex < oTemp.Actions.Count; iIndex++)
+                                {
+                                    <tr class="TableRow" draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)">
+                                        <td draggable="true">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    @oTemp.Actions[iIndex].Name
+
+                                                    <!-- Expand And Remove Buttons -->
+                                                    <button type="button" class="btn btn-default btn-xs pull-right" onclick="expandRow(this)" style="width:80px">
+                                                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Minimise
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-xs pull-right" onclick="removeRow(this)" style="width:80px">
+                                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                                    </button>
+                                                </div>
+                                                <table class="table table-hover">
+                                                    <!--  Insert each Property/Value  -->
+                                                    @{
+                                                        AutomationSuiteFrontEnd.Utilities.Data.ExpandableRow[] akvpTemp = AutomationSuiteFrontEnd.Utilities.HTMLFactory.GetProperties(oTemp.Actions[iIndex]);
+
+                                                        foreach (AutomationSuiteFrontEnd.Utilities.Data.ExpandableRow oLoopingVar in akvpTemp)
+                                                        {
+                                                            <tr class="expandable">
+                                                                <td>@oLoopingVar.Name</td>
+                                                                <td>@GenerateInputControl(oLoopingVar)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Divider/Seperator -->
+    @*<div class="col-md-1"></div>*@
+
+    <!-- Toolbox List -->
+    <div class="col-md-4">
+        <div class="row">
+            <!-- Toolbox items -->
+            <div class="panel panel-primary">
+                <div class="panel-heading">Tool Box</div>
+                <table class="table" id="toolboxContainer">
+                    <tbody>
+                        <!-- Generate available Toolbox Items -->
+                        @for (int iIndex = 0; iIndex < ViewBag.Toolbox.Count; iIndex++)
+                        {
+                            <tr class="TableRow" draggable="true" ondragstart="dragStarted(event)" ondragover="draggingOver(event)" ondrop="dropped(event)">
+                                <td draggable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            @ViewBag.Toolbox[iIndex].Name
+
+                                            <!-- Expand And Remove Buttons -->
+                                            <button type="button" class="btn btn-default btn-xs pull-right" onclick="expandRow(this)" style="width:80px">
+                                                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Minimise
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs pull-right" onclick="removeRow(this)" style="width:80px">
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <table class="table table-hover">
+                                            <!--  Insert each Property/Value  -->
+                                            @{
+                                            AutomationSuiteFrontEnd.Utilities.Data.ExpandableRow[] akvpTemp = 
+                                                AutomationSuiteFrontEnd.Utilities.HTMLFactory.GetProperties(ViewBag.Toolbox[iIndex]);
+
+                                            foreach (AutomationSuiteFrontEnd.Utilities.Data.ExpandableRow oLoopingVar in akvpTemp)
+                                            {
+                                                <tr class="expandable">
+                                                    <td>@oLoopingVar.Name</td>
+                                                    <td>@GenerateInputControl(oLoopingVar)</td>
+                                                </tr>
+                                            }
+                                            }
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

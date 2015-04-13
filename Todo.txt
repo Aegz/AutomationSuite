@@ -1,0 +1,6 @@
+
+
+1. All jobs produce logs in their folders (text for each session/run)
+    a. ExecutionJob should check the log on startup to populate when and how many times it has run
+2. Root Log for all program activities
+3. 

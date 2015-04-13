@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/AutomationService.Data" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/AutomationService.Data" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:9001/AutomationService?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/AutomationService.Data.DynamicDataItem" />
+  <xs:import schemaLocation="http://localhost:9001/AutomationService?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/AutomationService.Data.Frequency" />
+  <xs:import schemaLocation="http://localhost:9001/AutomationService?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/AutomationService.Data.Actions" />
+  <xs:complexType name="ExecutionJob">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/AutomationService.Data.DynamicDataItem" minOccurs="0" name="Details" nillable="true" type="q1:JobDetails" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/AutomationService.Data.Frequency" minOccurs="0" name="FreqType" nillable="true" type="q2:JobFrequency" />
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/AutomationService.Data.Actions" minOccurs="0" name="aoActions" nillable="true" type="q3:ArrayOfExecutionAction" />
+      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/AutomationService.Data.Actions" minOccurs="0" name="aoTriggers" nillable="true" type="q4:ArrayOfExecutionAction" />
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/AutomationService.Data.DynamicDataItem" minOccurs="0" name="oEnvironment" nillable="true" type="q5:ExecutionJobEnvironment" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExecutionJob" nillable="true" type="tns:ExecutionJob" />
+</xs:schema>

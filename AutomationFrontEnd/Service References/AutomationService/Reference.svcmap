@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="cfb9b9fd-0559-487c-be17-0dfbc4138d8d" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:9001/AutomationService" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="AutomationService.xsd" MetadataType="Schema" ID="22a89e38-1e12-4b56-a7ac-0fd9ca7eef52" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?xsd=xsd6" />
+    <MetadataFile FileName="AutomationService.disco" MetadataType="Disco" ID="ddf3a3e3-fdef-4a64-b841-5015b5457cb8" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?disco" />
+    <MetadataFile FileName="WCFFacade.wsdl" MetadataType="Wsdl" ID="e8aac302-af9e-4d9a-aaad-8fd26b132003" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?wsdl" />
+    <MetadataFile FileName="AutomationService1.xsd" MetadataType="Schema" ID="4c663652-fd26-4f2c-9968-b1d55907a223" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?xsd=xsd4" />
+    <MetadataFile FileName="AutomationService2.xsd" MetadataType="Schema" ID="e8b33b5f-aaa4-40d0-ae98-8bc9eb76e46d" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?xsd=xsd2" />
+    <MetadataFile FileName="AutomationService3.xsd" MetadataType="Schema" ID="bb1247a2-5eb6-4e95-bfa4-6114b85ed469" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?xsd=xsd0" />
+    <MetadataFile FileName="AutomationService4.xsd" MetadataType="Schema" ID="61c28f56-6473-47bf-ba0e-1b5c1609146e" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?xsd=xsd5" />
+    <MetadataFile FileName="AutomationService5.xsd" MetadataType="Schema" ID="c35a2295-0ea7-48ec-8b99-eca64579d5d2" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?xsd=xsd3" />
+    <MetadataFile FileName="AutomationService6.xsd" MetadataType="Schema" ID="e653da42-e5e5-43db-b861-8e79fd22fda9" SourceId="1" SourceUrl="http://localhost:9001/AutomationService?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

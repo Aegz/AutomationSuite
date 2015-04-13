@@ -1,0 +1,77 @@
+﻿@using AutomationSuiteFrontEnd.Utilities
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <!-- Bootstrap CSS -->
+    @Html.Raw("<link href='../../Content/Bootstrap/bootstrap.min.css' rel='stylesheet'>")
+
+    
+
+    @RenderSection("CustomPreBodyJS", required: false)
+
+</head>
+<body>  
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Servian Automation Suite</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class='@Html.IsActive("Home", "Index")'>@Html.ActionLink("Dashboard", "Index", "Home")</li>
+                    <li class="dropdown">
+                        <a href='#' class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Jobs<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("Create A New Job", "Details", "Home", new { id = "NEW JOB" }, null)</li>
+                            <li>@Html.ActionLink("View Your Jobs", "JobList", "Home")</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+
+    <!-- Core Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                @RenderBody()   
+            </div>
+            <div class="col-md-1"></div>
+        </div>        
+    </div>
+
+    <!-- Sticky Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">Created by Servian Pty Ltd, 2015. WH</p>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../../Scripts/Bootstrap/bootstrap.min.js"></script>
+</body>
+</html>

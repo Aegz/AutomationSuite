@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/AutomationService.Data.Actions" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/AutomationService.Data.Actions" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfExecutionAction">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ExecutionAction" nillable="true" type="tns:ExecutionAction" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfExecutionAction" nillable="true" type="tns:ArrayOfExecutionAction" />
+  <xs:complexType name="ExecutionAction">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExecutionAction" nillable="true" type="tns:ExecutionAction" />
+  <xs:complexType name="SQLAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ExecutionAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DatabaseType" type="tns:DatabaseType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SQLAction" nillable="true" type="tns:SQLAction" />
+  <xs:simpleType name="DatabaseType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="dbtTeradata" />
+      <xs:enumeration value="dbtNeteeza" />
+      <xs:enumeration value="dbtODBC" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DatabaseType" nillable="true" type="tns:DatabaseType" />
+  <xs:complexType name="FileAction">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ExecutionAction">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileType" type="tns:FileActionType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="FileAction" nillable="true" type="tns:FileAction" />
+  <xs:simpleType name="FileActionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="fatRead" />
+      <xs:enumeration value="fatWrite" />
+      <xs:enumeration value="fatCreate" />
+      <xs:enumeration value="fatDelete" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="FileActionType" nillable="true" type="tns:FileActionType" />
+</xs:schema>
