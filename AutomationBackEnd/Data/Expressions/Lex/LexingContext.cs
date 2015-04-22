@@ -1,11 +1,11 @@
-﻿using AutomationSuite.Expressions.DataObjects;
+﻿using AutomationService.Data.Expressions.DataObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationSuite.Expressions.Lex
+namespace AutomationService.Data.Expressions.Lex
 {
     class LexingContext
     {

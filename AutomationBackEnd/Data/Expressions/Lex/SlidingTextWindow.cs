@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationSuite.Expressions.Lex
+namespace AutomationService.Data.Expressions.Lex
 {
     /// <summary>
     /// A simple encapsulated class designed to 

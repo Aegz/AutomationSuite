@@ -1,6 +1,6 @@
 ﻿using AutomationService.Data.DynamicDataItem;
-using AutomationSuite.Expressions.DataObjects;
-using AutomationSuite.Expressions.Lex;
+using AutomationService.Data.Expressions.DataObjects;
+using AutomationService.Data.Expressions.Lex;
 using System;
 using System.Collections.Generic;
 using System.Linq;

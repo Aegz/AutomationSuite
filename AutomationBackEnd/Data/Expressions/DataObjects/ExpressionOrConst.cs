@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationSuite.Expressions.DataObjects
+namespace AutomationService.Data.Expressions.DataObjects
 {
     class ExpressionOrConst : IEnumerable<ExpressionOrConst>
     {
@@ -21,21 +21,26 @@ namespace AutomationSuite.Expressions.DataObjects
             set;
         }
 
-        public ExpressionOrConst() : this(String.Empty, String.Empty)
+        public ExpressionAttributes Attributes { get; set; }
+
+        public ExpressionOrConst(ExpressionAttributes xoAttributes = new ExpressionAttributes()) : this(String.Empty, String.Empty, xoAttributes)
         {
 
         }
 
-        public ExpressionOrConst(String xsTag) : this(xsTag, String.Empty)
+        public ExpressionOrConst(String xsTag, ExpressionAttributes xoAttributes = new ExpressionAttributes())
+            : this(xsTag, String.Empty, xoAttributes)
         {
 
         }
 
-        public ExpressionOrConst(String xsTag, String xsValue)
+        public ExpressionOrConst(String xsTag, String xsValue, ExpressionAttributes xoAttributes = new ExpressionAttributes())
         {
             // Set the tag and default the value
             Tag = xsTag;
             Value = xsValue;
+            Attributes = xoAttributes;
+            
         }
 
         protected List<ExpressionOrConst> Children

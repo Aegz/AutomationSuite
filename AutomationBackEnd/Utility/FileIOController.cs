@@ -40,16 +40,12 @@ namespace AutomationService.Utility
             String sExtension = System.IO.Path.GetExtension(xsFilePath);
 
             switch(sExtension)
-            {
-                case ".csv":
-                case ".dat":
-                case ".txt":
-                    return ReadTxtFileToContainer(xsFilePath, xcDelimiter);
+            {      
                 case ".xml":
                     // ?? TODO: XML has its own interaction
                     return null;
                 default:
-                    return null;
+                    return ReadTxtFileToContainer(xsFilePath, xcDelimiter);
             }
         }
 

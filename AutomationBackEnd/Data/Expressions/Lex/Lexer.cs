@@ -1,4 +1,4 @@
-﻿using AutomationSuite.Expressions.DataObjects;
+﻿using AutomationService.Data.Expressions.DataObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,20 +6,20 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace AutomationSuite.Expressions.Lex
+namespace AutomationService.Data.Expressions.Lex
 {
     class Lexer
     {
+        // A window designed to mimic a Queue but has the flexibility
+        // to allow peeking ahead
         SlidingTextWindow oWindow;
 
         private LexingContext Context { get; set; }
-
 
         public Lexer(String xsGivenText)
         {
             oWindow = new SlidingTextWindow(xsGivenText);
         }
-
 
         /// <summary>
         /// Catches when a keyword starting char is located (eg. <)
@@ -195,35 +195,65 @@ namespace AutomationSuite.Expressions.Lex
         private ExpressionOrConst InterpretKeywordAndGenerateExpr()
         {
             // Join the current expression into a single string for processing
-            String sKeyword = String.Join("", Context.CurrentExpression);
+            String sExpressionTag = String.Join("", Context.CurrentExpression);
             // Clear the queue to be safe
             Context.CurrentExpression.Clear();
 
             // 1. Trim the text so we can get ride of the <$, </$ and />, >
-            sKeyword = sKeyword.Trim(new char[] { '<', '/', '$', '>', ' ' });
+            sExpressionTag = sExpressionTag.Trim(new char[] { '<', '/', '$', '>' });
+            sExpressionTag = sExpressionTag.ToUpper(); // Force upper case
 
-            // 2. If it is a keyword we know
-            switch (sKeyword)
+            // Split by space to get all the individual tags
+            String[] asTags = sExpressionTag.Split();
+
+            // If we actually had any text at all
+            if (asTags.Length > 0)
             {
-                // Block Expression
-                case "FOREACH(COLUMN)":
-                    return new ForEachExpression(sKeyword, ForEachType.feColumn);
-                case "FOREACH(ROW)":
-                    return new ForEachExpression(sKeyword, ForEachType.feRow);
-                // Directories
-                case "WORKINGDIR(ALL)":
-                    // Get a path from the config
-                    return new ConstExpression("WorkingDir ALL");
-                case "WORKINGDIR(JOB)":
-                case "WORKINGDIR(THIS)":
-                    // Get a path from this job
-                    return new ConstExpression("WorkingDir JOB");
-                default:
-                    // 3. Is it a coordinate?
+                // Initialise some attributes
+                ExpressionAttributes oElementAttributes = new ExpressionAttributes();
+
+                // First word determines type, everything else is an attribute
+                for (int iIndex = 1; iIndex < asTags.Length; iIndex++ )
+                {
+                    // Clean up the text so we can build reliable Attributes
+                    String sTrimmedKeyValuePair = asTags[iIndex].Trim();
+                    String[] asKeyValuePair = sTrimmedKeyValuePair.Split('=');
+
+                    // Only process proper key value pairs
+                    if (asKeyValuePair.Length == 2)
+                    {
+                        oElementAttributes[asKeyValuePair[0]] = asKeyValuePair[1];
+                    }
+                }
+
+                // 2. If it is a keyword we know
+                switch (asTags[0])
+                {
+                    // Block Expression -> <$FOREACH TYPE=ROW>
+                    case "FOREACH":
+                        return new ForEachExpression(sExpressionTag, oElementAttributes);
+                    // Directories -> <$WORKINGDIR TYPE=ALL/>
+                    case "WORKINGDIR(ALL)":
+                        // Get a path from the config
+                        return new ConstExpression(sExpressionTag, oElementAttributes);
+                    case "WORKINGDIR(JOB)":
+                    case "WORKINGDIR(THIS)":
+                        // Get a path from this job
+                        return new ConstExpression(sExpressionTag, oElementAttributes);
+                    // Do cells like this? -> <$CELL ROW=X COLUMN=Y/>
+                    case "CELL":
+                    default:
+                        // 3. Is it a coordinate?
                         // 3a. Is it a single number
                         // 3b. Is it a coordinate (X,X)
-                    return new VariableUseExpression(sKeyword);
+                        return new VariableUseExpression(sExpressionTag, oElementAttributes);
+                }
             }
+            else
+            {
+                // Invalid expression
+                throw new Exception("An expression with no values?");
+            }          
         }
 
         private void GenerateConstantExpressionFromBuffer()

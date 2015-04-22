@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationSuite.Expressions.DataObjects
+namespace AutomationService.Data.Expressions.DataObjects
 {
     class VariableUseExpression : ExpressionOrConst
     {
         String[] asCoordinates;
 
-        public VariableUseExpression(String xsTag) : base (xsTag, xsTag)
+        public VariableUseExpression(String xsTag, ExpressionAttributes xoAttributes = new ExpressionAttributes())
+            : base(xsTag, xsTag, xoAttributes)
         {
             asCoordinates = xsTag.Split(new char[] {','});
         }

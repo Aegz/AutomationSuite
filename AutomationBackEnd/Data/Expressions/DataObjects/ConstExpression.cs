@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationSuite.Expressions.DataObjects
+namespace AutomationService.Data.Expressions.DataObjects
 {
     class ConstExpression : ExpressionOrConst
     {
-        public ConstExpression(String xsValue) : base(xsValue, xsValue)
+        public ConstExpression(String xsValue, ExpressionAttributes xoAttributes = new ExpressionAttributes())
+            : base(xsValue, xsValue, xoAttributes)
         {
 
         }

@@ -71,10 +71,12 @@
     <Compile Include="Data\DynamicDataItem\DataItemContainer.cs" />
     <Compile Include="Data\DynamicDataItem\ExecutionJobEnvironment.cs" />
     <Compile Include="Data\DynamicDataItem\JobDetails.cs" />
+    <Compile Include="Data\Expressions\DataObjects\BlockExpression.cs" />
     <Compile Include="Data\Expressions\DataObjects\ConstExpression.cs" />
     <Compile Include="Data\Expressions\DataObjects\ExpressionOrConst.cs" />
     <Compile Include="Data\Expressions\DataObjects\VariableExpression.cs" />
     <Compile Include="Data\Expressions\DataObjects\VariableUseExpression.cs" />
+    <Compile Include="Data\Expressions\ExpressionAttributes.cs" />
     <Compile Include="Data\Expressions\Lex\Lexer.cs" />
     <Compile Include="Data\Expressions\Lex\LexingContext.cs" />
     <Compile Include="Data\Expressions\Lex\SlidingTextWindow.cs" />

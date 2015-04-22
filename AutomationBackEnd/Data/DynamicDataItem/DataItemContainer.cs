@@ -294,16 +294,6 @@ namespace AutomationService.Data.DynamicDataItem
             return asReturnList;
         }
 
-        public DataItemContainer GetItemAsContainer(int xiIndex)
-        {
-            return new DataItemContainer(Key, aoItems[xiIndex]);
-        }
-
-        public DataItemContainer GetItemAsContainer(object xoGiven)
-        {
-            return new DataItemContainer(Key, xoGiven);
-        }
-
         public List<String> ConvertToStringList(FormatOptions xsOptions = new FormatOptions())
         {
             // Transform the objects list into a string
@@ -387,6 +377,16 @@ namespace AutomationService.Data.DynamicDataItem
 
             // Return a converted string
             return sLine;
+        }
+
+        public DataItemContainer GetItemAsContainer(int xiIndex)
+        {
+            return new DataItemContainer(Key, aoItems[xiIndex]);
+        }
+
+        public DataItemContainer GetItemAsContainer(object xoGiven)
+        {
+            return new DataItemContainer(Key, xoGiven);
         }
 
         public override string ToString()
