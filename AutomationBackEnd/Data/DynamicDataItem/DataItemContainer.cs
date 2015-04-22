@@ -281,22 +281,27 @@ namespace AutomationService.Data.DynamicDataItem
 
         #region Conversion and Normalisation
 
-        // If we know the explicit type, we can try and convert it here
-        public List<TOutput> ConvertAll<TOutput>()
+        public List<DataItemContainer> ConvertToTable(FormatOptions xsOptions = new FormatOptions())
         {
-            // Try and convert the type of every item in the List
-            try
-            {
-                // 
-                var oTemp = aoItems.Select((xoItem) => (TOutput)Convert.ChangeType(xoItem, typeof(TOutput)));
+            List<DataItemContainer> asReturnList = aoItems.Select((oItem) => GetItemAsContainer(oItem)).ToList();
 
-                //
-                return oTemp.ToList();
-            }
-            catch
+            // If we need it in descending order, flip it
+            if (xsOptions.Order == ListOrder.loDESC)
             {
-                return null;
+                asReturnList.Reverse();
             }
+
+            return asReturnList;
+        }
+
+        public DataItemContainer GetItemAsContainer(int xiIndex)
+        {
+            return new DataItemContainer(Key, aoItems[xiIndex]);
+        }
+
+        public DataItemContainer GetItemAsContainer(object xoGiven)
+        {
+            return new DataItemContainer(Key, xoGiven);
         }
 
         public List<String> ConvertToStringList(FormatOptions xsOptions = new FormatOptions())
@@ -380,10 +385,15 @@ namespace AutomationService.Data.DynamicDataItem
                 return String.Format(xsOptions.StringFormat, xoGiven);
             }
 
-
             // Return a converted string
             return sLine;
         }
+
+        public override string ToString()
+        {
+            return String.Join("", ConvertToStringList());
+        }
+
 
         #endregion
     }

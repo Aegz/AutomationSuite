@@ -36,16 +36,16 @@ namespace AutomationService.Data
             // Initialise the repository and start it (so it can find some jobs)
             oRepository = new JobRepository(oQueue, iFolderScanTime);
 
-            //ImportJobs();
+            ImportDefaultJobs();
             oRepository.Execute();
 
             // Initialise a list of consumers
             oConsumers = new List<JobConsumer>();
         }
 
-        public void ImportJobs()
+        public void ImportDefaultJobs()
         {
-            LogController.LogText("Insert Default Jobs");
+            LogController.LogText("JobScheduler: Insert Default Jobs");
 
             for (int iIndex = 0; iIndex < 6; iIndex++ )
             {
@@ -66,7 +66,7 @@ namespace AutomationService.Data
                                 new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                                 new SQLAction("SQLTest", "Query the DB for some information", "SELECT * FROM APSHARE_FP.WILL_REPORTS", DatabaseType.dbtODBC),
                                 new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
-                                new FileAction("Test","Write a File", @"C:\Temp\<1,1>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                                new FileAction("Test","Write a File", @"C:\Temp\<$1,1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                             },
                         new List<ExecutionAction> { });
                 }
@@ -81,7 +81,7 @@ namespace AutomationService.Data
                                 new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                                 new SQLAction("SQLTest", "Query the DB for some information", "SELECT * FROM APSHARE_FP.WILL_REPORTS", DatabaseType.dbtODBC),
                                 new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
-                                new FileAction("Test","Write a File", @"C:\Temp\<1,1>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                                new FileAction("Test","Write a File", @"C:\Temp\<$1,1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                             },
                         new List<ExecutionAction> { });
                 }
@@ -99,9 +99,9 @@ namespace AutomationService.Data
             Random oRandomTimeGenerator = new Random();
             int iConsumerSleepTime = Convert.ToInt32(Configuration.Instance.GetSetting("ConsumerRelaxTime"));
 
-            //// Create a consumer for each logical process found
-            for (int iCoreCount = 0; iCoreCount < Environment.ProcessorCount; iCoreCount++ )
-            //for (int iCoreCount = 0; iCoreCount < 1; iCoreCount++)
+            // Create a consumer for each logical process found
+            //for (int iCoreCount = 0; iCoreCount < Environment.ProcessorCount; iCoreCount++ )
+            for (int iCoreCount = 0; iCoreCount < 1; iCoreCount++)
             {
                 // Create a random time to add to the core sleep time
                 int iRandomTime = oRandomTimeGenerator.Next(1, 100);

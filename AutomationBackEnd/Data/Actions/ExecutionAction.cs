@@ -1,4 +1,6 @@
 ﻿using AutomationService.Data.DynamicDataItem;
+using AutomationSuite.Expressions.DataObjects;
+using AutomationSuite.Expressions.Lex;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +19,6 @@ namespace AutomationService.Data.Actions
     [XmlSerializerFormat]
     public abstract class ExecutionAction
     {
-        [XmlIgnore]
-        private readonly String PARAMETER_PATTERN = @"\<(?<FIRST>\d+)(\,(?<SECOND>\d+))??\>";
-
         [DataMember, XmlElement]
         public String Name;
         [DataMember, XmlElement]
@@ -29,29 +28,17 @@ namespace AutomationService.Data.Actions
 
         // Parameter specific
         private String sParamString;
-        private Boolean bNumberOfParametersCalculated = false;
-        protected int iNumberOfParameters = 0;
-        private List<String> asTextToReplace;
-        private List<String[]> asCoordinates;
+        private Lexer oLexer;
 
         #region Properties
-        public int NumberOfParameters
-        {
-            get
-            {
-                if (!bNumberOfParametersCalculated)
-                {
-                    CalculateNumberOfParameters(); 
-                }
-                return iNumberOfParameters;
-            }
-        }
 
         [DataMember, XmlAttribute]
         public String ParameterString
         {
             get
             {
+                // Only initialise when we need to start working
+                InitialiseLexer();     
                 // Manipulate the string (add items)
                 return GenerateCompleteParameterString();
             }
@@ -59,18 +46,13 @@ namespace AutomationService.Data.Actions
             {
                 //
                 sParamString = value;
-                CalculateNumberOfParameters();        
             }
         }
         #endregion
 
-        public ExecutionAction()
+        public ExecutionAction() : this("Blank", "Blank")
         {
-            Name = "Blank";
-            Description = "Blank";
 
-            asTextToReplace = new List<string>();
-            asCoordinates = new List<string[]>();
         }
 
         public ExecutionAction(String xsName, String xsDesc)
@@ -78,91 +60,24 @@ namespace AutomationService.Data.Actions
             // Set the core object variables
             Name = xsName;
             Description = xsDesc;
-
-            // Initialise the lists on construction
-            asTextToReplace = new List<string>();
-            asCoordinates = new List<String[]>();
         }
 
         public String GenerateCompleteParameterString()
         {
-            if (asTextToReplace.Count > 0 && oEnvironment != null)
+            // Only try and lex if we have a valid environment
+            if (oEnvironment != null)
             {
-                // Temp List
-                List<String> aoDataToInsert = new List<String>();
-
-                // For the number of parameters we need
-                for (int iIndex = 0; iIndex < iNumberOfParameters; iIndex++)
-                {
-                    // Pop an item
-                    DataItemContainer oContainer = oEnvironment.PopDataContainer();
-
-                    // Get its data (normalise data if possible)
-                    String sParameter = oContainer.GetItemByCoordinate(asCoordinates[iIndex]);
-
-                    // put it in the list
-                    aoDataToInsert.Add(sParameter);
-                }
-
-                // Replace all of our custom flags with proper String Format flags
-                String sOutputString = sParamString;
-                for (int iTextCount = 0; iTextCount < asTextToReplace.Count; iTextCount++)
-                {
-                    String sReplacementString = asTextToReplace[iTextCount];
-                    sOutputString = sOutputString.Replace(sReplacementString, "{" + iTextCount + "}");
-                }
-
-                // Start replacing from the param string directly
-                return String.Format(sOutputString, aoDataToInsert.ToArray());
+                ExpressionOrConst oIntermediateVar = oLexer.GenerateExpressionTree();
+                sParamString = oIntermediateVar.OutputCalculatedString(oEnvironment);
             }
 
-            //
+            // Always default to the param string
             return sParamString;
         }
 
-        public void CalculateNumberOfParameters()
-        {          
-            // Only do this work if we have a valid string
-            if (!String.IsNullOrWhiteSpace(sParamString))
-            {
-                // Initialise regex
-                Regex reRegex = new Regex(PARAMETER_PATTERN);
-                MatchCollection amColl = reRegex.Matches(sParamString);
-
-                foreach (Match oMatch in amColl)
-                {
-                    // Intermediate variable (trim the string)
-                    String sMatchingText = oMatch.Value.Trim();
-
-                    // Add to list of things we want to
-                    asTextToReplace.Add(sMatchingText); // Need to replace in string
-
-                    // The Coordinates (which will determine what we obtain
-                    String sCoordinates = sMatchingText.Substring(1, oMatch.Value.Length - 2);
-
-                    // Declare a variable for use later
-                    String[] temp;
-
-                    // If it is a two part coordinate
-                    if (sCoordinates.Contains(','))
-                    {
-                        // Split and return an int array
-                        temp = sCoordinates.Split(',');
-                    }
-                    else
-                    {
-                        // Just create an array with 1 value
-                        temp = new String[] { sCoordinates.Trim() };
-                    }
-
-                    // Append to list of things to add
-                    asCoordinates.Add(temp);
-                }
-            }
-
-            // Regex, count numbers and types
-            iNumberOfParameters = asTextToReplace.Count;
-            bNumberOfParametersCalculated = true;
+        public void InitialiseLexer()
+        {
+            oLexer = new Lexer(sParamString);
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace AutomationService.WCF
 
         public WCFController()
         {
-            LogController.LogText("WCF Controller Initialising");
+            LogController.LogText("WCF Controller: Initialising");
 
             // Close an existing service host if necessary
             if (m_svcHost != null) m_svcHost.Close();
@@ -55,7 +55,16 @@ namespace AutomationService.WCF
         public void InitialiseWCF()
         {
             // Open the service host
-            m_svcHost.Open();
+            try
+            {
+                m_svcHost.Open();
+            }
+            catch (System.ServiceModel.AddressAccessDeniedException)
+            {
+                LogController.LogText("WCF Controller: Failed due to inadequate permissions. Run again as administrator.");
+                //throw new Exception("Could not get the adequate permissions. Please run as administrator");
+            }
+            
         }
     }
 }

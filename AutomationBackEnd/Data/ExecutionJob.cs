@@ -115,7 +115,7 @@ namespace AutomationService.Data
         {
             // Move the job to the completed folder
             MoveJobToFolder(Configuration.Instance.GetSetting("ActiveJobsDirectory"));
-
+            
             // Tell the frequency that it last ran now
             FreqType.LastRun = DateTime.Now; 
 
