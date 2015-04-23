@@ -80,7 +80,7 @@ namespace AutomationService.Data.Expressions.Lex
                     GenerateConstantExpressionFromBuffer();
 
                     // Generate that new expression
-                    GenerateExpression();
+                    ScanAheadForKeyword();
                     break;
                 case '/':
                     // Check if we have a close to a keyword
@@ -129,7 +129,7 @@ namespace AutomationService.Data.Expressions.Lex
 
         }
 
-        private void GenerateExpression()
+        private void ScanAheadForKeyword()
         {
             // Default the value to false
             Boolean bExpressionFound = false;
@@ -240,8 +240,10 @@ namespace AutomationService.Data.Expressions.Lex
                     case "WORKINGDIR(THIS)":
                         // Get a path from this job
                         return new ConstExpression(sExpressionTag, oElementAttributes);
-                    // Do cells like this? -> <$CELL ROW=X COLUMN=Y/>
-                    case "CELL":
+                    // Do cells like this?
+                    case "CELL": // <$CELL ROW=X COLUMN=Y/>
+                    case "ROW": // <$ROW/>
+                    case "COLUMN": // <$COLUMN/>
                     default:
                         // 3. Is it a coordinate?
                         // 3a. Is it a single number

@@ -394,7 +394,6 @@ namespace AutomationService.Data.DynamicDataItem
             return String.Join("", ConvertToStringList());
         }
 
-
         #endregion
     }
 }

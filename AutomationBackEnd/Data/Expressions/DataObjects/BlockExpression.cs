@@ -50,7 +50,7 @@ namespace AutomationService.Data.Expressions.DataObjects
                     // Add the child values for each row
                     asResults.Add(
                         String.Join(
-                        "",
+                        Attributes["DELIMITER"],
                         aoChildren.Select(
                             (oChild) =>
                                 oChild.OutputCalculatedString(asRow))
