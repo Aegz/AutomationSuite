@@ -7,35 +7,42 @@ using System.Threading.Tasks;
 
 namespace AutomationService.Data.DynamicDataItem
 {
+    public delegate void LogMessageFn(String xsMessage);
+
     [DataContract]
     public class ExecutionJobEnvironment
     {
         // Visible for debugging
-        public Stack<DataItemContainer> aoDataStack;
+        public Stack<DataItemComposite> aoDataStack;
 
         // Debugging
-        public List<DataItemContainer> aoDebuggingStack;
+        public List<DataItemComposite> aoDebuggingStack;
 
-        public ExecutionJobEnvironment()
+        // Logging messages
+        public LogMessageFn oLogMessage;
+
+        public ExecutionJobEnvironment(LogMessageFn xoLoggingFunction)
         {
-            aoDataStack = new Stack<DataItemContainer>();
-            aoDebuggingStack = new List<DataItemContainer>();
+            oLogMessage = xoLoggingFunction;
+            aoDataStack = new Stack<DataItemComposite>();
+            aoDebuggingStack = new List<DataItemComposite>();
         }
 
-        public void PushDataContainer(DataItemContainer xoContainer)
+        public void PushDataContainer(DataItemComposite xoContainer)
         {
             aoDataStack.Push(xoContainer);
             aoDebuggingStack.Add(xoContainer);
         }
 
-        public DataItemContainer PeekDataContainer()
+        public DataItemComposite PeekDataContainer()
         {
             return aoDataStack.Peek();
         }
 
-        public DataItemContainer PopDataContainer()
+        public DataItemComposite PopDataContainer()
         {
             return aoDataStack.Pop();
         }
+
     }
 }

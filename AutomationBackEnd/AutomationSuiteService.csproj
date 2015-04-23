@@ -66,11 +66,15 @@
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Data\Actions\ExecutionAction.cs" />
     <Compile Include="Data\Actions\FileAction.cs" />
+    <Compile Include="Data\Actions\SMTPAction.cs" />
     <Compile Include="Data\Actions\SQLAction.cs" />
     <Compile Include="Data\Actions\WriteToLogAction.cs" />
-    <Compile Include="Data\DynamicDataItem\DataItemContainer.cs" />
+    <Compile Include="Data\DynamicDataItem\BooleanItemComposite.cs" />
+    <Compile Include="Data\DynamicDataItem\DataItemComposite.cs" />
     <Compile Include="Data\DynamicDataItem\ExecutionJobEnvironment.cs" />
     <Compile Include="Data\DynamicDataItem\JobDetails.cs" />
+    <Compile Include="Data\DynamicDataItem\RowItemComposite.cs" />
+    <Compile Include="Data\DynamicDataItem\StringItemComposite.cs" />
     <Compile Include="Data\Expressions\DataObjects\BlockExpression.cs" />
     <Compile Include="Data\Expressions\DataObjects\ConstExpression.cs" />
     <Compile Include="Data\Expressions\DataObjects\ExpressionOrConst.cs" />
@@ -83,6 +87,7 @@
     <Compile Include="Data\Frequency\JobFrequency.cs" />
     <Compile Include="Data\Frequency\JobFrequencyCount.cs" />
     <Compile Include="Data\Frequency\JobFrequencyDate.cs" />
+    <Compile Include="Data\Frequency\JobSession.cs" />
     <Compile Include="Data\ImportExport\ExecutionJobSerializer.cs" />
     <Compile Include="Data\ProducerConsumer\JobProducer.cs" />
     <Compile Include="Data\ProducerConsumer\JobConsumer.cs" />
@@ -95,6 +100,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Utility\LogController.cs" />
+    <Compile Include="Utility\SMTPController.cs" />
     <Compile Include="WCF\IWCFInterface.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

@@ -45,7 +45,7 @@ namespace AutomationService.Utility
             //aoDBAdapters.Add(DatabaseType.dbtNeteeza, new ODBCDataAdapter(Configuration.Instance().GetSetting("NeteezaConnString")));
         }
         
-        public DataItemContainer GetQueryResultsAsContainer (DatabaseType xeType, String xsQuery)
+        public DataItemComposite GetQueryResultsAsContainer (DatabaseType xeType, String xsQuery)
         {
             // Adapter for the database type is not initialised
             if (!aoDBAdapters.ContainsKey(xeType))
@@ -83,19 +83,35 @@ namespace AutomationService.Utility
                         // Query the database
                         DataTable oTable = aoDBAdapters[xeType].getQueryAsDataTable(xsQuery);
 
+                        List<String> asSchema = new List<string>();
+
+                        foreach (DataColumn oColumn in oTable.Columns)
+                        {
+                            asSchema.Add(oColumn.ColumnName);
+                        }
+
                         // Initialise a return var
-                        DataItemContainer oReturnContainer = new DataItemContainer(typeof(DataRow));
+                        DataItemComposite oReturnContainer = new DataItemComposite(asSchema);
 
                         // If there are rows to process
                         if (oTable.Rows.Count > 0)
                         {
+                            DataItemComposite oRow = new RowItemComposite();
+
                             // For each row that isnt the schema
                             for (int iRowIndex = 0; iRowIndex < oTable.Rows.Count; iRowIndex++)
                             {
-                                // Add a single data item
-                                oReturnContainer.Add(oTable.Rows[iRowIndex]);
+                                foreach (String sColumn in asSchema)
+                                {
+                                    // Add a single cell
+                                    oRow.Add(oTable.Rows[iRowIndex][sColumn]);
+                                }
+
+                                // Add the row
+                                oReturnContainer.Add(oRow);
                             }
                         }
+
                         // Return the container
                         return oReturnContainer;
                     }

@@ -4,6 +4,7 @@ using AutomationService.Data.DynamicDataItem;
 using AutomationService.Data.Frequency;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -104,7 +105,8 @@ namespace AutomationService.Data
             aoTriggers = xaoTriggers;
             aoActions = xaoActions;
 
-            oEnvironment = new ExecutionJobEnvironment();
+            // Store the message logging function as a delegate
+            oEnvironment = new ExecutionJobEnvironment(FreqType.LogMessage);
         }
 
         /// <summary>
@@ -117,13 +119,13 @@ namespace AutomationService.Data
             MoveJobToFolder(Configuration.Instance.GetSetting("ActiveJobsDirectory"));
             
             // Tell the frequency that it last ran now
-            FreqType.LastRun = DateTime.Now; 
+            FreqType.NewSession(Details.OperatingPath);
 
             // Run all actions
             foreach (ExecutionAction oLoopingVar in aoTriggers)
             {
                 // Intermediate var
-                DataItemContainer oTemp = oLoopingVar.Execute(this.oEnvironment);
+                DataItemComposite oTemp = oLoopingVar.Execute(this.oEnvironment);
 
                 // If some data was returned to the stack
                 if (oTemp != null && oTemp.Value != null)
@@ -136,13 +138,8 @@ namespace AutomationService.Data
                 Thread.Yield();
             }
 
-            // Intermediate var
-            DataItemContainer oTopItem = oEnvironment.PeekDataContainer();
-
             // If the topmost object on the stack is valid, we can run the actions
-            if ((oTopItem.Key == typeof(Boolean) && (Boolean)oTopItem.Value == true) || // Boolean and true
-                (oTopItem.Key == typeof(String) && !String.IsNullOrWhiteSpace((String)oTopItem.Value))  // String and not null
-                ) 
+            if (CheckIfTriggersWereSuccessful())
             {
                 // Run all actions
                 RunActions();
@@ -150,6 +147,15 @@ namespace AutomationService.Data
                 // Set the last successful run as now
                 FreqType.RecordSuccessfulExecution();
             }
+        }
+
+        private Boolean CheckIfTriggersWereSuccessful()
+        {
+            // Intermediate var
+            DataItemComposite oTopItem = oEnvironment.PeekDataContainer();
+
+            // return the bool value
+            return oTopItem.IsValidOrContainsData();
         }
 
         /// <summary>
@@ -160,7 +166,7 @@ namespace AutomationService.Data
             foreach (ExecutionAction oLoopingVar in aoActions)
             {
                 // Intermediate var
-                DataItemContainer oTemp = oLoopingVar.Execute(oEnvironment);
+                DataItemComposite oTemp = oLoopingVar.Execute(oEnvironment);
 
                 // If some data was returned to the stack
                 if (oTemp != null && oTemp.Value != null)

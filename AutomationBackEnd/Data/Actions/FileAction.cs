@@ -76,7 +76,7 @@ namespace AutomationService.Data.Actions
         /// </summary>
         /// <param name="xoGiven"></param>
         /// <returns></returns>
-        public override DataItemContainer Execute(ExecutionJobEnvironment xoGiven)
+        public override DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
         {
             // Add a reference to the environment
             oEnvironment = xoGiven;
@@ -89,7 +89,7 @@ namespace AutomationService.Data.Actions
 
                 case FileActionType.fatWrite:
                     // Look above to see what data we have to play with
-                    DataItemContainer oTemp = xoGiven.PopDataContainer();
+                    DataItemComposite oTemp = xoGiven.PopDataContainer();
 
                     // If it is null, try popping again
                     if (oTemp.Value == null)
@@ -104,14 +104,13 @@ namespace AutomationService.Data.Actions
                         List<String> xasTextToAdd;
 
                         // Convert the container into a string list
-                        xasTextToAdd = oTemp.ConvertToStringList();
+                        xasTextToAdd = oTemp.ToList();
 
                         // Normalise the parameter string to be safe
                         String sFilePath = ParameterString;
                      
                         // Return something saying it passed
-                        return new DataItemContainer(
-                            typeof(Boolean),
+                        return new BooleanItemComposite(
                             FileIOController.Instance.WriteLinesToFile(sFilePath, xasTextToAdd));
                     }
                     catch
@@ -121,13 +120,11 @@ namespace AutomationService.Data.Actions
                     }
 
                 case FileActionType.fatCreate:
-                    return new DataItemContainer(
-                        typeof(Boolean),
+                    return new BooleanItemComposite(
                         FileIOController.Instance.CreateFile(ParameterString));
 
                 case FileActionType.fatDelete:
-                    return new DataItemContainer(
-                        typeof(Boolean),
+                    return new BooleanItemComposite(
                         FileIOController.Instance.DeleteFile(ParameterString));
                 default:
                     break;

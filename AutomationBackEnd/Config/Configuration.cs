@@ -31,7 +31,11 @@ namespace AutomationService.Config
             {"LockFileName", "this.lock"}, // Purely here for scalability
             {"ExecutionLog", "execution.log"}, // The log that will hold overall information
 
-            {"SessionFolder", "Session {0}"}, // Session folder name
+            {"SessionFileName", "Session"}, // Session folder name
+
+            {"DefaultFromSMTP", "AutomationSuite@optus.com.au"},
+            {"SMTPHost", "localhost"},
+            {"SMTPPort", "25"},
         };
 
         public Configuration()
@@ -183,7 +187,6 @@ namespace AutomationService.Config
             {
                 throw new Exception("Attempted to access a Setting that doesn't exist (" + xsSettingName + ")");
             }
-            //return fdSettings.ContainsKey(xsSettingName) ? fdSettings[xsSettingName] : "";
         }
 
 

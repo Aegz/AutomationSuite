@@ -49,7 +49,7 @@ namespace AutomationService.Data.Actions
             eDatabaseType = xeType;
         }
 
-        public override DataItemContainer Execute(ExecutionJobEnvironment xoGiven)
+        public override DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
         {
             // Add a reference to the environment
             oEnvironment = xoGiven;

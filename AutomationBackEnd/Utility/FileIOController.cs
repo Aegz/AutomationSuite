@@ -35,7 +35,7 @@ namespace AutomationService.Utility
         #endregion
 
 
-        public DataItemContainer ReadFile(String xsFilePath, Char xcDelimiter)
+        public DataItemComposite ReadFile(String xsFilePath, Char xcDelimiter)
         {
             String sExtension = System.IO.Path.GetExtension(xsFilePath);
 
@@ -51,12 +51,12 @@ namespace AutomationService.Utility
 
         #region Read Delimited Text
 
-        public DataItemContainer ReadTxtFileToContainer(String xsFilePath, Char xcDelimiter)
+        public DataItemComposite ReadTxtFileToContainer(String xsFilePath, Char xcDelimiter)
         {
             // Read all possible lines into an array
             String[] asLines = File.ReadAllLines(GetNormalisedPath(xsFilePath));
             // Initialise a return var
-            DataItemContainer aoReturnContainer;
+            DataItemComposite aoReturnContainer;
 
             // If we have anything to process
             if (asLines.Length > 0)
@@ -69,7 +69,7 @@ namespace AutomationService.Utility
                 if (iNumberOfColumns == 1)
                 {
                     // Initialise a String specific Container
-                    aoReturnContainer = new DataItemContainer(typeof(String));
+                    aoReturnContainer = new StringItemComposite();
 
                     // Add all the strings
                     foreach (String sLoopingVar in asLines)
@@ -80,7 +80,7 @@ namespace AutomationService.Utility
                 else
                 {
                     // Create a new Container with a Schema
-                    aoReturnContainer = new DataItemContainer(typeof(DataRow), new List<String>(asColumns));
+                    aoReturnContainer = new DataItemComposite(new List<String>(asColumns));
 
                     // Initialise a table
                     DataTable oTemp = new DataTable();

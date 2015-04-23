@@ -63,10 +63,14 @@ namespace AutomationService.Data
                         new JobFrequencyCount(5),
                         new List<ExecutionAction> 
                             { 
+                                new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                                 new SQLAction("SQLTest", "Query the DB for some information", "SELECT * FROM APSHARE_FP.WILL_REPORTS", DatabaseType.dbtODBC),
-                                new FileAction("Test","Write a File", @"C:\Temp\<$1,1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                             },
-                        new List<ExecutionAction> { });
+                        new List<ExecutionAction> 
+                            {
+                                new FileAction("Test","Write a File", @"C:\Temp\<$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                            }
+                        );
                 }
                 else
                 {
@@ -79,9 +83,11 @@ namespace AutomationService.Data
                                 new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                                 new SQLAction("SQLTest", "Query the DB for some information", "SELECT * FROM APSHARE_FP.WILL_REPORTS", DatabaseType.dbtODBC),
                                 new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
-                                new FileAction("Test","Write a File", @"C:\Temp\<$1,1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                             },
-                        new List<ExecutionAction> { });
+                        new List<ExecutionAction> 
+                        {
+                            new FileAction("Test","Write a File", @"C:\Temp\<$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                        });
                 }
 
                 ExecutionJobSerializer.ExportJobToFolder(oTemp, Configuration.Instance.GetSetting("ApprovedDirectory"));

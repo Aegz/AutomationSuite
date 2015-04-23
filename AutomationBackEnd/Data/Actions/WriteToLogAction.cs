@@ -25,7 +25,7 @@ namespace AutomationService.Data.Actions
             eDestination = xeDestination;
         }
 
-        public override DataItemContainer Execute(ExecutionJobEnvironment xoGiven)
+        public override DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
         {
             // Add a reference to the environment
             oEnvironment = xoGiven;
@@ -34,13 +34,13 @@ namespace AutomationService.Data.Actions
             try
             {
                 // Try and retrieve the item we will log
-                DataItemContainer oTemp = xoGiven.PeekDataContainer();
+                DataItemComposite oTemp = xoGiven.PeekDataContainer();
 
-                // If there is something to write and its a type we like
-                if (oTemp.Value != null && oTemp.Key == typeof(DataItemContainer))
+                // If there is something to write
+                if (oTemp.Value != null)
                 {
                     // Convert and store the data
-                    List<String> asTextToLog = oTemp.ConvertToStringList();
+                    List<String> asTextToLog = oTemp.ToList();
 
                     // Switch on where this needs to be logged
                     switch (eDestination)
@@ -62,11 +62,11 @@ namespace AutomationService.Data.Actions
                 }
 
                 // 
-                return new DataItemContainer(typeof(Boolean), true);
+                return new BooleanItemComposite(true);
             }
             catch
             {
-                return new DataItemContainer(typeof(Boolean), false);
+                return new BooleanItemComposite(false);
             }
         }
 

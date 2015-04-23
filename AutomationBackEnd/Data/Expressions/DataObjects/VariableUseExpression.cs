@@ -9,33 +9,49 @@ namespace AutomationService.Data.Expressions.DataObjects
 {
     class VariableUseExpression : ExpressionOrConst
     {
-        String[] asCoordinates;
-
         public VariableUseExpression(String xsTag, ExpressionAttributes xoAttributes = new ExpressionAttributes())
             : base(xsTag, xsTag, xoAttributes)
         {
-            asCoordinates = xsTag.Split(new char[] {','});
+
         }
 
         public override String OutputCalculatedString(ExecutionJobEnvironment xoEnvironment)
         {
+            // Build an array of values that are valid and not empty
+            List<String> asCoordinates = new String[] 
+                { 
+                    Attributes["ROW"], 
+                    Attributes["COLUMN"] 
+                }.Where(
+                    (sValue) => !String.IsNullOrWhiteSpace(sValue)
+                    ).ToList();
+
             // Only do this work if we have a valid string
-            if (asCoordinates.Length > 0)
+            if (asCoordinates.Count > 0)
             {
                 // 1. Get this objects value first
-                Value = xoEnvironment.PopDataContainer().GetItemByCoordinate(asCoordinates);
+                Value = xoEnvironment.PopDataContainer().GetItemByCoordinate(asCoordinates.ToArray());
             }
 
             // 2. Calculate this value and prepend it
             return base.OutputCalculatedString(xoEnvironment);
         }
 
-        public override String OutputCalculatedString(DataItemContainer xoContainer)
+        public override String OutputCalculatedString(DataItemComposite xoContainer)
         {
+            // Build an array of values that are valid and not empty
+            List<String> asCoordinates = new String[] 
+                { 
+                    Attributes["ROW"], 
+                    Attributes["COLUMN"] 
+                }.Where(
+                    (sValue) => !String.IsNullOrWhiteSpace(sValue)
+                    ).ToList();
+
             // Only do this work if we have a valid string
-            if (asCoordinates.Length > 0)
+            if (asCoordinates.Count > 0)
             {
-                Value = xoContainer.GetItemByCoordinate(asCoordinates);
+                Value = xoContainer.GetItemByCoordinate(asCoordinates.ToArray());
             }
 
             // Then return the value
