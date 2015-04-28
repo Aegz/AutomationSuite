@@ -45,7 +45,7 @@ namespace AutomationService.Data.Expressions.DataObjects
             if (Attributes["TYPE"].Equals("ROW"))
             {
                 // For each row we have available in the DataContainer
-                foreach (DataItemComposite asRow in Data.ConvertToTable())
+                foreach (CompositeOrValue asRow in Data.Item.Items)
                 {
                     // Add the child values for each row
                     asResults.Add(

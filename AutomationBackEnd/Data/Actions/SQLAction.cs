@@ -49,12 +49,12 @@ namespace AutomationService.Data.Actions
             eDatabaseType = xeType;
         }
 
-        public override DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
+        public override StackFrame Execute(ExecutionJobEnvironment xoGiven)
         {
             // Add a reference to the environment
             oEnvironment = xoGiven;
             // Call the DB Controller and try to retrieve a datatable
-            return DBController.Instance.GetQueryResultsAsContainer(eDatabaseType, ParameterString);
+            return new StackFrame(DBController.Instance.GetQueryResultsAsContainer(eDatabaseType, ParameterString));
         }
     }
 }

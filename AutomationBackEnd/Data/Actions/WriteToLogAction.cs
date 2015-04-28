@@ -25,7 +25,7 @@ namespace AutomationService.Data.Actions
             eDestination = xeDestination;
         }
 
-        public override DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
+        public override StackFrame Execute(ExecutionJobEnvironment xoGiven)
         {
             // Add a reference to the environment
             oEnvironment = xoGiven;
@@ -34,13 +34,13 @@ namespace AutomationService.Data.Actions
             try
             {
                 // Try and retrieve the item we will log
-                DataItemComposite oTemp = xoGiven.PeekDataContainer();
+                StackFrame oTemp = xoGiven.PeekDataContainer();
 
                 // If there is something to write
-                if (oTemp.Value != null)
+                if (oTemp.ToString() != null)
                 {
                     // Convert and store the data
-                    List<String> asTextToLog = oTemp.ToList();
+                    List<String> asTextToLog = oTemp.Item.Items.Select((oItem) => oItem.ToString()).ToList();
 
                     // Switch on where this needs to be logged
                     switch (eDestination)
@@ -62,11 +62,11 @@ namespace AutomationService.Data.Actions
                 }
 
                 // 
-                return new BooleanItemComposite(true);
+                return new StackFrame(new ValueItem<Boolean>(true));
             }
             catch
             {
-                return new BooleanItemComposite(false);
+                return new StackFrame(new ValueItem<Boolean>(false));
             }
         }
 

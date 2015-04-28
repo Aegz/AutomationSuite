@@ -125,10 +125,10 @@ namespace AutomationService.Data
             foreach (ExecutionAction oLoopingVar in aoTriggers)
             {
                 // Intermediate var
-                DataItemComposite oTemp = oLoopingVar.Execute(this.oEnvironment);
+                StackFrame oTemp = oLoopingVar.Execute(this.oEnvironment);
 
                 // If some data was returned to the stack
-                if (oTemp != null && oTemp.Value != null)
+                if (oTemp != null && oTemp.Item != null)
                 {
                     // Store the data returned by the action
                     oEnvironment.PushDataContainer(oTemp);
@@ -152,7 +152,7 @@ namespace AutomationService.Data
         private Boolean CheckIfTriggersWereSuccessful()
         {
             // Intermediate var
-            DataItemComposite oTopItem = oEnvironment.PeekDataContainer();
+            StackFrame oTopItem = oEnvironment.PeekDataContainer();
 
             // return the bool value
             return oTopItem.IsValidOrContainsData();
@@ -166,10 +166,10 @@ namespace AutomationService.Data
             foreach (ExecutionAction oLoopingVar in aoActions)
             {
                 // Intermediate var
-                DataItemComposite oTemp = oLoopingVar.Execute(oEnvironment);
+                StackFrame oTemp = oLoopingVar.Execute(oEnvironment);
 
                 // If some data was returned to the stack
-                if (oTemp != null && oTemp.Value != null)
+                if (oTemp != null && oTemp.Item != null)
                 {
                     // Store the data returned by the action
                     oEnvironment.PushDataContainer(oTemp);
@@ -203,8 +203,25 @@ namespace AutomationService.Data
             // Move to the completed folder
             if (Directory.Exists(Details.OperatingPath) && !Details.OperatingPath.Equals(sDestination))
             {
+                // If we find a conflict
+                if (Directory.Exists(sDestination))
+                {
+                    // Add a number to the end of the file if necessary
+                    for (int iIndex = 0; iIndex < 100; iIndex++)
+                    {
+                        String sNewDirectory = sDestination + iIndex;
+                        // If we find a name we can use
+                        if (!File.Exists(sNewDirectory) && !Directory.Exists(sNewDirectory))
+                        {
+                            sDestination = sNewDirectory;
+                            break;
+                        }
+                    }
+                }
+
                 // Actually move the folder
                 Directory.Move(Details.OperatingPath, sDestination);
+
                 // Assign the new operating path
                 Details.OperatingPath = sDestination;
             }

@@ -12,7 +12,7 @@ namespace AutomationService.Data.Expressions.DataObjects
     /// </summary>
     class VariableExpression : ExpressionOrConst
     {
-        public DataItemComposite Data;
+        public StackFrame Data;
 
         public VariableExpression(String xsTag, ExpressionAttributes xoAttributes = new ExpressionAttributes())
             : base(xsTag, xoAttributes)

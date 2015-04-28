@@ -31,11 +31,12 @@ namespace AutomationService.Data.Actions
             ParameterString = xsMessage;
         }
 
-        public override DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
+        public override StackFrame Execute(ExecutionJobEnvironment xoGiven)
         {
             // Message will always be ParamString (allowing it to pull data from the environment)
-            return new BooleanItemComposite(
-                    SMTPController.Instance.SendEmail(sRecipient, sSubject, ParameterString));
+            return new StackFrame(
+                new ValueItem<Boolean>(
+                    SMTPController.Instance.SendEmail(sRecipient, sSubject, ParameterString)));
         }
     }
 }

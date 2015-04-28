@@ -30,14 +30,14 @@ namespace AutomationService.Data.Expressions.DataObjects
             if (asCoordinates.Count > 0)
             {
                 // 1. Get this objects value first
-                Value = xoEnvironment.PopDataContainer().GetItemByCoordinate(asCoordinates.ToArray());
+                Value = xoEnvironment.PopDataContainer().GetItemByCoordinate(asCoordinates.ToArray()).ToString();
             }
 
             // 2. Calculate this value and prepend it
             return base.OutputCalculatedString(xoEnvironment);
         }
 
-        public override String OutputCalculatedString(DataItemComposite xoContainer)
+        public override String OutputCalculatedString(CompositeOrValue xoContainer)
         {
             // Build an array of values that are valid and not empty
             List<String> asCoordinates = new String[] 
@@ -51,7 +51,7 @@ namespace AutomationService.Data.Expressions.DataObjects
             // Only do this work if we have a valid string
             if (asCoordinates.Count > 0)
             {
-                Value = xoContainer.GetItemByCoordinate(asCoordinates.ToArray());
+                Value = xoContainer.GetItemByCoordinate(asCoordinates.ToArray()).ToString();
             }
 
             // Then return the value

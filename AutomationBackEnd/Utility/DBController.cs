@@ -45,7 +45,7 @@ namespace AutomationService.Utility
             //aoDBAdapters.Add(DatabaseType.dbtNeteeza, new ODBCDataAdapter(Configuration.Instance().GetSetting("NeteezaConnString")));
         }
         
-        public DataItemComposite GetQueryResultsAsContainer (DatabaseType xeType, String xsQuery)
+        public CompositeOrValue GetQueryResultsAsContainer (DatabaseType xeType, String xsQuery)
         {
             // Adapter for the database type is not initialised
             if (!aoDBAdapters.ContainsKey(xeType))
@@ -91,20 +91,22 @@ namespace AutomationService.Utility
                         }
 
                         // Initialise a return var
-                        DataItemComposite oReturnContainer = new DataItemComposite(asSchema);
+                        TableItemComposite oReturnContainer = new TableItemComposite(asSchema);
 
                         // If there are rows to process
                         if (oTable.Rows.Count > 0)
                         {
-                            DataItemComposite oRow = new RowItemComposite();
-
                             // For each row that isnt the schema
                             for (int iRowIndex = 0; iRowIndex < oTable.Rows.Count; iRowIndex++)
                             {
+                                // Initialise a new row each time
+                                RowItemComposite oRow = new RowItemComposite(asSchema);
+
+                                // Insert all data into the row
                                 foreach (String sColumn in asSchema)
                                 {
                                     // Add a single cell
-                                    oRow.Add(oTable.Rows[iRowIndex][sColumn]);
+                                    oRow[sColumn] = new ValueItem<String>(Convert.ToString(oTable.Rows[iRowIndex][sColumn]));
                                 }
 
                                 // Add the row

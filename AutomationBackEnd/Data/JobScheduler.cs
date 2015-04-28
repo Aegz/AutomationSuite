@@ -68,7 +68,7 @@ namespace AutomationService.Data
                             },
                         new List<ExecutionAction> 
                             {
-                                new FileAction("Test","Write a File", @"C:\Temp\<$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                                new FileAction("Test","Write a File", @"C:\Temp\EVEN <$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                             }
                         );
                 }
@@ -80,13 +80,12 @@ namespace AutomationService.Data
                         new JobFrequencyDate(FrequencySetting.fs5Minutes, DateTime.Now.AddHours(2)),
                         new List<ExecutionAction> 
                             { 
-                                new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                                 new SQLAction("SQLTest", "Query the DB for some information", "SELECT * FROM APSHARE_FP.WILL_REPORTS", DatabaseType.dbtODBC),
                                 new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                             },
                         new List<ExecutionAction> 
                         {
-                            new FileAction("Test","Write a File", @"C:\Temp\<$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                            new FileAction("Test","Write a File", @"C:\Temp\ODD <$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                         });
                 }
 

@@ -31,15 +31,9 @@ namespace AutomationService.Data.Actions
     [XmlSerializerFormat]
     public class FileAction : ExecutionAction
     {
-        
-        private FileActionType eType;
 
         [DataMember, XmlElement]
-        public FileActionType FileType
-        {
-            get { return eType; }
-            set { eType = value; }
-        }
+        public FileActionType FileType { get; set; }
 
         private char cDelimiter;
 
@@ -65,7 +59,7 @@ namespace AutomationService.Data.Actions
             : base(xsName, xsDesc)
         {
             ParameterString = xsFileName;
-            eType = xeType;
+            FileType = xeType;
             cDelimiter = xcDelimiter;
         }
 
@@ -76,23 +70,23 @@ namespace AutomationService.Data.Actions
         /// </summary>
         /// <param name="xoGiven"></param>
         /// <returns></returns>
-        public override DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
+        public override StackFrame Execute(ExecutionJobEnvironment xoGiven)
         {
             // Add a reference to the environment
             oEnvironment = xoGiven;
 
             // Switch based on the type of action
-            switch (eType)
+            switch (FileType)
             {
                 case FileActionType.fatRead:
-                    return FileIOController.Instance.ReadFile(ParameterString, cDelimiter);
+                    return new StackFrame(FileIOController.Instance.ReadFile(ParameterString, cDelimiter));
 
                 case FileActionType.fatWrite:
                     // Look above to see what data we have to play with
-                    DataItemComposite oTemp = xoGiven.PopDataContainer();
+                    StackFrame oTemp = xoGiven.PopDataContainer();
 
                     // If it is null, try popping again
-                    if (oTemp.Value == null)
+                    if (oTemp.Item == null)
                     {
                         // try again
                         return Execute(xoGiven);
@@ -100,32 +94,33 @@ namespace AutomationService.Data.Actions
                     // Try catch block for the conversion
                     try
                     {      
-                        // Initialise a return list
-                        List<String> xasTextToAdd;
-
-                        // Convert the container into a string list
-                        xasTextToAdd = oTemp.ToList();
-
                         // Normalise the parameter string to be safe
                         String sFilePath = ParameterString;
                      
                         // Return something saying it passed
-                        return new BooleanItemComposite(
-                            FileIOController.Instance.WriteLinesToFile(sFilePath, xasTextToAdd));
+                        return new StackFrame(
+                            new ValueItem<Boolean>(
+                                FileIOController.Instance.WriteLinesToFile(
+                                    sFilePath, 
+                                    oTemp.Item.Items.Select(
+                                        (oItem) => oItem.ToString()
+                                        )
+                                    .ToList()
+                                )));
                     }
-                    catch
+                    catch (Exception e)
                     {
                         //?? ERROR: Invalid operation
-                        throw new Exception("Invalid operation");
+                        throw new Exception("Invalid operation:" + e.Message);
                     }
 
                 case FileActionType.fatCreate:
-                    return new BooleanItemComposite(
-                        FileIOController.Instance.CreateFile(ParameterString));
+                    return new StackFrame(new ValueItem<Boolean>(
+                        FileIOController.Instance.CreateFile(ParameterString)));
 
                 case FileActionType.fatDelete:
-                    return new BooleanItemComposite(
-                        FileIOController.Instance.DeleteFile(ParameterString));
+                    return new StackFrame(new ValueItem<Boolean>(
+                        FileIOController.Instance.DeleteFile(ParameterString)));
                 default:
                     break;
             }

@@ -85,13 +85,13 @@ namespace AutomationService.Data.Actions
         /// </summary>
         /// <param name="xoGiven"></param>
         /// <returns></returns>
-        public virtual DataItemComposite Execute(ExecutionJobEnvironment xoGiven)
+        public virtual StackFrame Execute(ExecutionJobEnvironment xoGiven)
         {
             // Add a reference to the environment
             oEnvironment = xoGiven;
 
             // default to true
-            return new BooleanItemComposite(true);
+            return new StackFrame(new ValueItem<Boolean>(true));
         }
     }
 

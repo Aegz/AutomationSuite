@@ -35,7 +35,7 @@ namespace AutomationService.Utility
         #endregion
 
 
-        public DataItemComposite ReadFile(String xsFilePath, Char xcDelimiter)
+        public CompositeOrValue ReadFile(String xsFilePath, Char xcDelimiter)
         {
             String sExtension = System.IO.Path.GetExtension(xsFilePath);
 
@@ -51,43 +51,36 @@ namespace AutomationService.Utility
 
         #region Read Delimited Text
 
-        public DataItemComposite ReadTxtFileToContainer(String xsFilePath, Char xcDelimiter)
+        public CompositeOrValue ReadTxtFileToContainer(String xsFilePath, Char xcDelimiter)
         {
             // Read all possible lines into an array
             String[] asLines = File.ReadAllLines(GetNormalisedPath(xsFilePath));
             // Initialise a return var
-            DataItemComposite aoReturnContainer;
+            CompositeItem aoReturnContainer;
 
             // If we have anything to process
             if (asLines.Length > 0)
             {
                 // Split it and get the number of columns
-                String[] asColumns = asLines[0].Split(new char[] { xcDelimiter });
+                List<String> asColumns = asLines[0].Split(new char[] { xcDelimiter }).ToList();
 
-                int iNumberOfColumns = asColumns.Length;
+                int iNumberOfColumns = asColumns.Count;
 
                 if (iNumberOfColumns == 1)
                 {
                     // Initialise a String specific Container
-                    aoReturnContainer = new StringItemComposite();
+                    aoReturnContainer = new CompositeItem();
 
                     // Add all the strings
                     foreach (String sLoopingVar in asLines)
                     {
-                        aoReturnContainer.Add(sLoopingVar);
+                        aoReturnContainer.Add(new ValueItem<String>(sLoopingVar));
                     }
                 }
                 else
                 {
                     // Create a new Container with a Schema
-                    aoReturnContainer = new DataItemComposite(new List<String>(asColumns));
-
-                    // Initialise a table
-                    DataTable oTemp = new DataTable();
-                    foreach (String sColumn in asColumns)
-                    {
-                        oTemp.Columns.Add(new DataColumn(sColumn));
-                    }
+                    aoReturnContainer = new TableItemComposite(asColumns);
 
                     // Try and populate the data
                     for (int iIndex = 0; iIndex < asLines.Length; iIndex++)
@@ -95,17 +88,18 @@ namespace AutomationService.Utility
                         // Intermediate variables
                         String sLine = asLines[iIndex];
                         String[] asCells = asLines[iIndex].Split(new char[] { xcDelimiter });
+
                         // Initialise a new row
-                        DataRow oDataRow = oTemp.NewRow();
+                        RowItemComposite oRow = new RowItemComposite(asColumns);
 
                         // For each cell
                         for (int iCellIndex = 0; iCellIndex < iNumberOfColumns; iCellIndex++)
                         {
-                            oDataRow[asColumns[iCellIndex]] = asCells[iCellIndex];
+                            oRow[asColumns[iCellIndex]] = new ValueItem<String>(asCells[iCellIndex]);
                         }
 
                         // Add the row
-                        aoReturnContainer.Add(oDataRow);
+                        aoReturnContainer.Add(oRow);
                     }
                 }
 

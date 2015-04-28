@@ -21,7 +21,7 @@ namespace AutomationService.Data.Expressions.DataObjects
             return Value;
         }
 
-        public override string OutputCalculatedString(DataItemComposite xoContainer)
+        public override string OutputCalculatedString(CompositeOrValue xoContainer)
         {
             // Simply return the value
             return Value;

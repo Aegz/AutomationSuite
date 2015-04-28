@@ -84,7 +84,7 @@ namespace AutomationService.Data.Expressions.DataObjects
             return Value + sOutput;
         }
 
-        public virtual String OutputCalculatedString(DataItemComposite xoContainer)
+        public virtual String OutputCalculatedString(CompositeOrValue xoContainer)
         {
             return Value + String.Join("", xoContainer.ToString());
         }
