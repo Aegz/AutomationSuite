@@ -43,6 +43,9 @@ namespace AutomationService.Data
             oConsumers = new List<JobConsumer>();
         }
 
+        /// <summary>
+        /// Creates some default jobs for testing
+        /// </summary>
         public void ImportDefaultJobs()
         {
             LogController.LogText("JobScheduler: Insert Default Jobs");
@@ -63,14 +66,16 @@ namespace AutomationService.Data
                         new JobFrequencyCount(5),
                         new List<ExecutionAction> 
                             { 
-                                new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
+                                new FileAction("Test","Read a file",  @"<$WORKINGDIR />\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                                 new SQLAction("SQLTest", "Query the DB for some information", "SELECT * FROM APSHARE_FP.WILL_REPORTS", DatabaseType.dbtODBC),
                             },
                         new List<ExecutionAction> 
                             {
-                                new FileAction("Test","Write a File", @"C:\Temp\EVEN <$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                                //new FileAction("Test","Write a File", @"C:\Temp\EVEN <$CELL ROW=1 />"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                                new FileAction("Test","Write a File", @"<$WORKINGDIR />\EVEN <$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                             }
                         );
+                    
                 }
                 else
                 {
@@ -81,11 +86,11 @@ namespace AutomationService.Data
                         new List<ExecutionAction> 
                             { 
                                 new SQLAction("SQLTest", "Query the DB for some information", "SELECT * FROM APSHARE_FP.WILL_REPORTS", DatabaseType.dbtODBC),
-                                new FileAction("Test","Read a file",  @"C:\Temp\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
+                                new FileAction("Test","Read a file",  @"<$WORKINGDIR />\ReadFile"  + iIndex + ".txt", FileActionType.fatRead, ','),
                             },
                         new List<ExecutionAction> 
                         {
-                            new FileAction("Test","Write a File", @"C:\Temp\ODD <$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
+                            new FileAction("Test","Write a File", @"<$WORKINGDIR />\ODD <$CELL ROW=1 COLUMN=1/>"  + iIndex + ".txt",  FileActionType.fatWrite, ','),
                         });
                 }
 
@@ -94,7 +99,10 @@ namespace AutomationService.Data
             }
         }
 
-        public void RunJobs()
+        /// <summary>
+        /// 
+        /// </summary>
+        public void InitialiseConsumers()
         {
             LogController.LogText("Scheduler: Initialising");
 

@@ -18,19 +18,20 @@ namespace AutomationService.Data.Expressions.DataObjects
         public override String OutputCalculatedString(ExecutionJobEnvironment xoEnvironment)
         {
             // Build an array of values that are valid and not empty
-            List<String> asCoordinates = new String[] 
+            // ?? TODO: Figure out if empty should be allowed
+            String[] asCoordinates = new String[] 
                 { 
                     Attributes["ROW"], 
                     Attributes["COLUMN"] 
                 }.Where(
                     (sValue) => !String.IsNullOrWhiteSpace(sValue)
-                    ).ToList();
+                    ).ToArray();
 
             // Only do this work if we have a valid string
-            if (asCoordinates.Count > 0)
+            if (asCoordinates.Length > 0)
             {
                 // 1. Get this objects value first
-                Value = xoEnvironment.PopDataContainer().GetItemByCoordinate(asCoordinates.ToArray()).ToString();
+                Value = xoEnvironment.PopDataContainer().GetItemByCoordinate(asCoordinates).ToString();
             }
 
             // 2. Calculate this value and prepend it
@@ -40,18 +41,18 @@ namespace AutomationService.Data.Expressions.DataObjects
         public override String OutputCalculatedString(CompositeOrValue xoContainer)
         {
             // Build an array of values that are valid and not empty
-            List<String> asCoordinates = new String[] 
+            String[] asCoordinates = new String[] 
                 { 
                     Attributes["ROW"], 
                     Attributes["COLUMN"] 
                 }.Where(
                     (sValue) => !String.IsNullOrWhiteSpace(sValue)
-                    ).ToList();
+                    ).ToArray();
 
             // Only do this work if we have a valid string
-            if (asCoordinates.Count > 0)
+            if (asCoordinates.Length > 0)
             {
-                Value = xoContainer.GetItemByCoordinate(asCoordinates.ToArray()).ToString();
+                Value = xoContainer.GetItemByCoordinate(asCoordinates).ToString();
             }
 
             // Then return the value

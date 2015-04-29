@@ -63,11 +63,11 @@ namespace AutomationService.Data
 
         // What conditions need to be fulfilled to run the actions
         [DataMember, XmlElement]
-        public List<ExecutionAction> aoTriggers;
+        public List<ExecutionAction> Triggers;
 
         [DataMember, XmlElement]
         // What actions will be run for this job
-        public List<ExecutionAction> aoActions;
+        public List<ExecutionAction> Actions;
 
         // Environment object which keeps track of what data is available
         [DataMember]
@@ -102,8 +102,8 @@ namespace AutomationService.Data
             Details.Description = xoDetails.Description;
 
             FreqType = xoFreq;
-            aoTriggers = xaoTriggers;
-            aoActions = xaoActions;
+            Triggers = xaoTriggers;
+            Actions = xaoActions;
 
             // Store the message logging function as a delegate
             oEnvironment = new ExecutionJobEnvironment(FreqType.LogMessage);
@@ -122,7 +122,7 @@ namespace AutomationService.Data
             FreqType.NewSession(Details.OperatingPath);
 
             // Run all actions
-            foreach (ExecutionAction oLoopingVar in aoTriggers)
+            foreach (ExecutionAction oLoopingVar in Triggers)
             {
                 // Intermediate var
                 StackFrame oTemp = oLoopingVar.Execute(this.oEnvironment);
@@ -149,6 +149,10 @@ namespace AutomationService.Data
             }
         }
 
+        /// <summary>
+        /// Returns true if we can confirm the triggers passed
+        /// </summary>
+        /// <returns></returns>
         private Boolean CheckIfTriggersWereSuccessful()
         {
             // Intermediate var
@@ -163,7 +167,7 @@ namespace AutomationService.Data
         /// </summary>
         public void RunActions()
         {
-            foreach (ExecutionAction oLoopingVar in aoActions)
+            foreach (ExecutionAction oLoopingVar in Actions)
             {
                 // Intermediate var
                 StackFrame oTemp = oLoopingVar.Execute(oEnvironment);
@@ -180,22 +184,19 @@ namespace AutomationService.Data
             }
         }
 
-        public Boolean CanBeExecuted()
-        {
-            return FreqType.CanBeExecuted();
-        }
-
-        public Boolean CanBeRemoved()
-        {
-            return FreqType.CanBeRemoved();
-        }
-
+        /// <summary>
+        /// Finalise the job by moving it to the complete folder
+        /// </summary>
         public void CloseJob()
         {
             // Move the job to the completed folder
             MoveJobToFolder(Configuration.Instance.GetSetting("CompletedDirectory"));
         }
 
+        /// <summary>
+        /// Move the Job to a new folder
+        /// </summary>
+        /// <param name="xsNewFolder"></param>
         public void MoveJobToFolder(String xsNewFolder)
         {
             String sDestination = Path.Combine(xsNewFolder, Details.Name);
@@ -210,6 +211,7 @@ namespace AutomationService.Data
                     for (int iIndex = 0; iIndex < 100; iIndex++)
                     {
                         String sNewDirectory = sDestination + iIndex;
+
                         // If we find a name we can use
                         if (!File.Exists(sNewDirectory) && !Directory.Exists(sNewDirectory))
                         {

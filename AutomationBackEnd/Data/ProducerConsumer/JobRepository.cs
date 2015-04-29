@@ -51,6 +51,10 @@ namespace AutomationService.Data.ProducerConsumer
             CleanseActiveAndPendingFolders();
         }
 
+        /// <summary>
+        /// Cleans up the active and pending folders for initialisation.
+        /// The folders should be empty
+        /// </summary>
         private void CleanseActiveAndPendingFolders()
         {
             // Get every directory in our working directory
@@ -76,6 +80,9 @@ namespace AutomationService.Data.ProducerConsumer
             }
         }
 
+        /// <summary>
+        /// Start the worker which will consume and produce jobs
+        /// </summary>
         public void Execute()
         {
             // Start running the producer
@@ -89,6 +96,9 @@ namespace AutomationService.Data.ProducerConsumer
             }
         }
 
+        /// <summary>
+        /// Start finding and adding jobs for the consumers
+        /// </summary>
         public void StartConsuming()
         {
             // Just keep running until told to die
@@ -105,13 +115,16 @@ namespace AutomationService.Data.ProducerConsumer
                     break;
                 }
 
+                // Adds jobs to the schedule if they will be run
                 ScheduleJobsToBeRun();
 
-                AddNewJobsForConsumers();
+                // Add jobs that will be consumed (run soon)
+                MoveScheduledJobsToExecutionQueue();
 
                 // Every iteration, destroy anything that is complete
                 lock (aoActiveJobQueue)
                 {
+                    // Flush out dead jobs
                     ClearDeactiveJobs();
                 }
 
@@ -121,6 +134,10 @@ namespace AutomationService.Data.ProducerConsumer
         }
 
         #region Adding/Removing Jobs from Queue
+
+        /// <summary>
+        /// Schedules the jobs to be run some time in the future
+        /// </summary>
         private void ScheduleJobsToBeRun()
         {
             // Add new jobs (try and get 4 jobs)
@@ -144,13 +161,16 @@ namespace AutomationService.Data.ProducerConsumer
             }
         }
 
-        private void AddNewJobsForConsumers()
+        /// <summary>
+        /// Looks through the schedule for jobs that can be run now
+        /// </summary>
+        private void MoveScheduledJobsToExecutionQueue()
         {
             // Loop through the scheduled jobs and insert if necessary
             foreach (ExecutionJob oJob in aoScheduledJobs)
             {
                 // If the job can be executed and it hasn't already been added
-                if (oJob.CanBeExecuted() && !aoActiveJobQueue.ContainsJob(oJob))
+                if (oJob.FreqType.CanBeExecuted() && !aoActiveJobQueue.ContainsJob(oJob))
                 {
                     LogController.LogText("Repository: Job has been queued (" + oJob.Details.Name + ")");
 
@@ -160,6 +180,9 @@ namespace AutomationService.Data.ProducerConsumer
             }
         }
 
+        /// <summary>
+        /// Clears out jobs that are complete or can be removed.
+        /// </summary>
         private void ClearDeactiveJobs()
         {
             // Loop through the scheduled jobs and remove if necessary
@@ -179,6 +202,7 @@ namespace AutomationService.Data.ProducerConsumer
                 }
             } 
         }
+        
         #endregion
 
     }

@@ -34,7 +34,6 @@ namespace AutomationService.Utility
         }
         #endregion
 
-
         public CompositeOrValue ReadFile(String xsFilePath, Char xcDelimiter)
         {
             String sExtension = System.IO.Path.GetExtension(xsFilePath);
@@ -107,8 +106,8 @@ namespace AutomationService.Utility
                 return aoReturnContainer;
             }
 
-            // Return a list
-            return null;
+            // Return false boolean
+            return new ValueItem<Boolean>(false);
         }
 
         #endregion

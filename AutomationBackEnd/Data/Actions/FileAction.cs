@@ -35,7 +35,8 @@ namespace AutomationService.Data.Actions
         [DataMember, XmlElement]
         public FileActionType FileType { get; set; }
 
-        private char cDelimiter;
+        [DataMember, XmlElement]
+        public char Delimiter { get; set; }
 
         public FileAction() : base()
         {
@@ -60,7 +61,7 @@ namespace AutomationService.Data.Actions
         {
             ParameterString = xsFileName;
             FileType = xeType;
-            cDelimiter = xcDelimiter;
+            Delimiter = xcDelimiter;
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace AutomationService.Data.Actions
             switch (FileType)
             {
                 case FileActionType.fatRead:
-                    return new StackFrame(FileIOController.Instance.ReadFile(ParameterString, cDelimiter));
+                    return new StackFrame(FileIOController.Instance.ReadFile(ParameterString, Delimiter));
 
                 case FileActionType.fatWrite:
                     // Look above to see what data we have to play with

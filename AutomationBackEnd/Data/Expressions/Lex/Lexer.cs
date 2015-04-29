@@ -1,4 +1,5 @@
-﻿using AutomationService.Data.Expressions.DataObjects;
+﻿using AutomationService.Config;
+using AutomationService.Data.Expressions.DataObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace AutomationService.Data.Expressions.Lex
     {
         // A window designed to mimic a Queue but has the flexibility
         // to allow peeking ahead
-        SlidingTextWindow oWindow;
+        private SlidingTextWindow oWindow;
 
         private LexingContext Context { get; set; }
 
@@ -58,6 +59,9 @@ namespace AutomationService.Data.Expressions.Lex
             return Context.RootNode;
         }
 
+        /// <summary>
+        /// If we have a possible keyword, try and interpret what it is
+        /// </summary>
         private void InterpretPossibleKeyword()
         {
             // Move anything that is possibly a new expression into the 
@@ -129,6 +133,9 @@ namespace AutomationService.Data.Expressions.Lex
 
         }
 
+        /// <summary>
+        /// Simple method designed to scan ahead to make sure we have found a keyword
+        /// </summary>
         private void ScanAheadForKeyword()
         {
             // Default the value to false
@@ -192,6 +199,10 @@ namespace AutomationService.Data.Expressions.Lex
 
         }
 
+        /// <summary>
+        /// Interprets a keyword and returns an Expression node for it
+        /// </summary>
+        /// <returns></returns>
         private ExpressionOrConst InterpretKeywordAndGenerateExpr()
         {
             // Join the current expression into a single string for processing
@@ -233,9 +244,9 @@ namespace AutomationService.Data.Expressions.Lex
                     case "FOREACH":
                         return new ForEachExpression(sExpressionTag, oElementAttributes);
                     // Directories -> <$WORKINGDIR TYPE=ALL/>
-                    case "WORKINGDIR(ALL)":
+                    case "WORKINGDIR":
                         // Get a path from the config
-                        return new ConstExpression(sExpressionTag, oElementAttributes);
+                        return new ConstExpression(Configuration.Instance.GetSetting("WorkingDirectory"), oElementAttributes);
                     case "WORKINGDIR(JOB)":
                     case "WORKINGDIR(THIS)":
                         // Get a path from this job
@@ -258,6 +269,9 @@ namespace AutomationService.Data.Expressions.Lex
             }          
         }
 
+        /// <summary>
+        /// Simply pushes the buffer into a Constant Expression
+        /// </summary>
         private void GenerateConstantExpressionFromBuffer()
         {
             // Intermediate var

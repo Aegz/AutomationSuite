@@ -51,7 +51,7 @@ namespace AutomationService
             oScheduler = new JobScheduler();
 
             // Start processing jobs (and initialise too if necessary)
-            oScheduler.RunJobs();
+            oScheduler.InitialiseConsumers();
 
             // Initialise a WCF Controller
             oWCF = new WCFController();

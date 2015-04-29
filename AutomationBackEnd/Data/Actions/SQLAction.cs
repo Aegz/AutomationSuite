@@ -27,15 +27,8 @@ namespace AutomationService.Data.Actions
     [XmlSerializerFormat]
     public class SQLAction: ExecutionAction
     {
-        private DatabaseType eDatabaseType;
-
         [DataMember, XmlElement]
-        public DatabaseType DatabaseType
-        {
-            get { return eDatabaseType; }
-            set { eDatabaseType = value; }
-        }
-
+        public DatabaseType DatabaseType { get; set; }
 
         public SQLAction() : base()
         {
@@ -46,7 +39,7 @@ namespace AutomationService.Data.Actions
             : base(xsName, xsDesc)
         {
             ParameterString = xsQuery;
-            eDatabaseType = xeType;
+            DatabaseType = xeType;
         }
 
         public override StackFrame Execute(ExecutionJobEnvironment xoGiven)
@@ -54,7 +47,7 @@ namespace AutomationService.Data.Actions
             // Add a reference to the environment
             oEnvironment = xoGiven;
             // Call the DB Controller and try to retrieve a datatable
-            return new StackFrame(DBController.Instance.GetQueryResultsAsContainer(eDatabaseType, ParameterString));
+            return new StackFrame(DBController.Instance.GetQueryResultsAsContainer(DatabaseType, ParameterString));
         }
     }
 }
